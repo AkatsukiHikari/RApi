@@ -36,9 +36,17 @@ gem "bootsnap", require: false
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem "rack-cors"
 
+# JsonWebToken
 gem "jwt"
 
+# 权限认证
+gem "pundit"
+
+# 加密 
 gem "bcrypt"
+
+# 分页
+gem "pagy"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

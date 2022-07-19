@@ -6,6 +6,7 @@ class ApplicationController < ActionController::API
     before_action :authenticate_user
     rescue_from ActiveRecord::RecordNotFound , with: :record_not_found
     rescue_from Pundit::NotAuthorizedError, with: :unauthorized_access
+    rescue_from StandardError , with: :render500
 
     '''
     # 接口调用前验证用户是否登录
@@ -35,8 +36,8 @@ class ApplicationController < ActionController::API
     end
 
     # 返回错误接口
-    def make_error( code ,  message = "Unknown Error" )
-        render json: { :code => code , :message => message } , status: :internal_server_error
+    def make_error( code ,  message = "Unknown Error" , status = :internal_server_error)
+        render json: { :code => code , :message => message } , status: status
     end
 
     private
@@ -48,5 +49,9 @@ class ApplicationController < ActionController::API
     # 权限认证失败统一返回
     def unauthorized_access
         render json: { :errors => "You have no permission to access this api"} , status: :forbidden
+    end
+
+    def render500
+        render json: {:errors => "Server Error" } , status: :internal_server_error
     end
 end

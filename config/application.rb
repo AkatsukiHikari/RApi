@@ -1,4 +1,6 @@
-require_relative "boot"
+require_relative "../app/lib/utils/book"
+
+require('csv')
 
 require "rails/all"
 

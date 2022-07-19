@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
   namespace :api do
+    namespace :spec do
+      post 'excel/upload_csv'
+    end
     namespace :v1 do
         resources :users do
           post :login, on: :collection

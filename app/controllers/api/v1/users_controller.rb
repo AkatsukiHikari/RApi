@@ -6,49 +6,58 @@ class Api::V1::UsersController < ApplicationController
   def index
     page = params[:page]
     limit = params[:limit]
-
-
+    # response params
+    count = nil
+    data = {}
     if page.nil? && limit.nil?
-      begin
-        @users = User.all
-        make_response({ :data => @users.as_json(except: [:password_digest]) , :count => @users.length })
-      rescue
-        make_error( 201  )
-      end
+      @users = User.all
+      hash = UserSerializer.new(@users).serializable_hash
+      hash = hash[:data].map { |user| ( user[:attributes] ) }
+
+      data[:data] = hash
+      count = @users.length
     else
       @page , @records = pagy( User.all , :page => page , :items => limit )
-      make_response( {:data => @records.as_json(except: [:password_digest]) , :page => @page.count})
+      data = UserSerializer.new(@records).serializable_hash
+      count = @page.count
     end
+
+
+    data[:count] = count
+
+    make_response( data )
   end
 
   # GET /users/1
   def show
-    render json: @user
+    user = UserSerializer.new(@user).serializable_hash
+    make_response( {:data => user[:data][:attributes]} )
   end
 
   # POST /users
   def create
     @user = User.new(user_params)
-
     if @user.save
-      render json: @user, status: :created, location: @user
+      hash = UserSerializer.new(@user).serializable_hash
+      make_response( hash )
     else
-      render json: @user.errors, status: :unprocessable_entity
+      make_error(202, @user.errors.full_messages, :unprocessable_entity)
     end
   end
 
   # PATCH/PUT /users/1
   def update
     if @user.update(user_params)
-      render json: @user
+      make_response( UserSerializer.new(@user).serializable_hash )
     else
-      render json: @user.errors, status: :unprocessable_entity
+      make_error( 203 , @user.errors.full_messages , :unprocessable_entity)
     end
   end
 
   # DELETE /users/1
   def destroy
     @user.destroy
+    make_response( UserSerializer.new(@user).serializable_hash )
   end
 
   # 登陆授权
@@ -70,7 +79,7 @@ class Api::V1::UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_params
-      params.require(:user).permit(:name, :password_digest, :email, :phone, :avatar, :sex, :address, :description)
+      params.require(:user).permit(:name, :password, :email, :avatar)
     end
 
     def login_params

@@ -39,8 +39,18 @@ gem "rack-cors"
 # JsonWebToken
 gem "jwt"
 
-# 权限认证
-gem "pundit"
+# For Authentication
+gem 'pundit'
+gem 'sorcery'
+
+
+# For Search Function
+gem 'ransack'
+gem 'ransack-enum', '~> 1.0'
+
+# For SEO
+gem 'meta-tags'
+gem 'sitemap_generator'
 
 # 加密 
 gem "bcrypt"
@@ -48,9 +58,15 @@ gem "bcrypt"
 # 分页
 gem "pagy"
 
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
+  # RSpec and related
+  gem 'factory_bot_rails'
+  gem 'rspec-rails', '~> 5.0.0'
+  # Use ruby support
+  gem 'solargraph', require: false
 end
 
 group :development do
@@ -58,3 +74,11 @@ group :development do
   # gem "spring"
 end
 
+
+gem "yaml", "~> 0.2.0"
+
+gem "jbuilder", "~> 2.11"
+
+gem "jsonapi-serializer", "~> 2.2"
+
+gem "faraday", "~> 2.3"
